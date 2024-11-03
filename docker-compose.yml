@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  nginx-lb:
+    image: nginx:latest
+    container_name: nginx-lb
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - web1
+      - web2
+      - web3
+  
+  web1:
+    image: nginx:latest
+    container_name: blue_container
+    volumes:
+      - ./blue.html:/usr/share/nginx/html/blue.html
+    ports:
+      - "81:80"
+    restart: always
+    command: /bin/bash -c "sed -i 's/index.html/blue.html/' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
+  web2:
+    image: nginx:latest
+    container_name: green_container
+    volumes:
+      - ./green.html:/usr/share/nginx/html/green.html
+    ports:
+      - "82:80"
+    restart: always
+    command: /bin/bash -c "sed -i 's/index.html/green.html/' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
+  web3:
+    image: nginx:latest
+    container_name: red_container
+    volumes:
+      - ./red.html:/usr/share/nginx/html/red.html
+    ports:
+      - "83:80"
+    restart: always
+    command: /bin/bash -c "sed -i 's/index.html/red.html/' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
+    
